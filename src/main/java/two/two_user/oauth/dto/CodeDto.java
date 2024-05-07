@@ -1,4 +1,4 @@
-package zerobase.bud.oauth.dto;
+package two.two_user.oauth.dto;
 
 import lombok.Getter;
 
