@@ -48,17 +48,16 @@ public class LoginService {
         tokenParam.add("client_secret", client_secret);
         HttpEntity<MultiValueMap<String, String>> oAuthTokenRequest = new HttpEntity<>(tokenParam, tokenHeaders);
         ResponseEntity<String> tokenResponse = tokenTemplate.postForEntity("https://github.com/login/oauth/access_token", oAuthTokenRequest, String.class);
-
         if(ObjectUtils.isEmpty(tokenResponse.getBody()) || !tokenResponse.getBody().contains("access_token") || tokenResponse.getBody().contains("error")) return null;
-        String OAuthAccessToken = tokenResponse.getBody().replace("access_token=", "").replace("&scope=&token_type=bearer", "");
-
+        String OAuthAccessToken = tokenResponse.getBody().split("&")[0].replace("access_token=", "");
+        log.error(OAuthAccessToken);
         HttpHeaders userHeaders = new HttpHeaders();
         RestTemplate userTemplate = new RestTemplate();
         MultiValueMap<String, String> userParam = new LinkedMultiValueMap<>();
         userHeaders.add(HttpHeaders.AUTHORIZATION,"Bearer " + OAuthAccessToken);
         HttpEntity<MultiValueMap<String, String>> getUserInfoRequest = new HttpEntity<>(userParam, userHeaders);
         ResponseEntity<Map> userResponse = userTemplate.exchange("https://api.github.com/user", HttpMethod.GET, getUserInfoRequest, Map.class);
-
+        log.error(userResponse.getBody().toString());
         if(ObjectUtils.isEmpty(userResponse)) return null;
 
         Member member = saveOrUpdate(userResponse.getBody(), OAuthAccessToken);

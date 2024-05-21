@@ -26,7 +26,6 @@ public class LoginController {
     @GetMapping("/token")
     public ResponseEntity<?> requestCode(@RequestParam(value = "code") String code) {
         List<String> tokenInfo = loginService.codeToJwt(code);
-        log.error(tokenInfo.get(0) + tokenInfo.get(1));
         if(ObjectUtils.isEmpty(tokenInfo.get(0))) return ResponseEntity.ok(null);
 
         return ResponseEntity.ok()
