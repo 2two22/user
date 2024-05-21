@@ -2,6 +2,9 @@ package two.two_user.oauth.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import two.two_user.domain.Member;
+import two.two_user.domain.MemberStatus;
+
 import java.util.Map;
 
 @Getter
@@ -38,16 +41,16 @@ public class OAuthAttribute {
                 .build();
     }
 
-//    public Member toEntity(String imageUrl) {
-//        return Member.builder()
-//                .userId(userId)
-//                .userCode(userCode)
-//                .status(MemberStatus.VERIFIED)
-//                .oauthToken(oAuthAccessToken)
-//                .profileImg(imageUrl)
-//                .addInfoYn(false)
-//                .build();
-//    }
+    public Member toEntity(String imageUrl) {
+        return Member.builder()
+                .userId(userId)
+                .userCode(userCode)
+                .status(MemberStatus.VERIFIED)
+                .oauthToken(oAuthAccessToken)
+                .profileImg(imageUrl)
+                .addInfoYn(false)
+                .build();
+    }
 
 
 }
