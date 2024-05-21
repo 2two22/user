@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import two.two_user.domain.Member;
-import two.two_user.dto.JwtDto;
+import two.two_user.jwt.dto.JwtDto;
 
 @RestController
 @RequiredArgsConstructor
