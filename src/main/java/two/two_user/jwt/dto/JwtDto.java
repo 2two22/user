@@ -1,4 +1,4 @@
-package two.two_user.dto;
+package two.two_user.jwt.dto;
 
 import lombok.Builder;
 import lombok.Data;
