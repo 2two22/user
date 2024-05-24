@@ -28,7 +28,7 @@ public class SecurityConfig {
         http
                 .cors(config -> config.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(c -> c
-                        .requestMatchers("/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/**", "/h2-console/**", "/test").permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.NEVER))
