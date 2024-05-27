@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,10 +17,8 @@ import org.springframework.util.StringUtils;
 import two.two_user.domain.Member;
 import two.two_user.domain.repository.MemberRepository;
 import two.two_user.jwt.dto.JwtDto;
-import two.two_user.oauth.service.MemberService;
+import two.two_user.member.service.MemberService;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Optional;
 

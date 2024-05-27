@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+import two.two_user.client.S3Client;
+import two.two_user.domain.Domain;
 import two.two_user.domain.Member;
 import two.two_user.domain.repository.MemberRepository;
 import two.two_user.exception.BudException;
@@ -23,7 +25,7 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final MemberRepository memberRepository;
 //    private final LevelRepository levelRepository;
-//    private final AwsS3Api awsS3Api;
+    private final S3Client s3Client;
 
     public JwtDto login(OAuth2User oAuth2User) {
         return tokenProvider.generateToken(oAuth2User);
@@ -44,9 +46,9 @@ public class AuthService {
         if(memberRepository.findByNickname(nickname).isPresent()) {
             throw new BudException(ErrorCode.INTERNAL_ERROR);
         }
-//        if(!ObjectUtils.isEmpty(file) && ObjectUtils.isEmpty(imagePath)) {
-//            member.setProfileImg(awsS3Api.uploadImage(file, PROFILES));
-//        }
+        if(!ObjectUtils.isEmpty(file) && ObjectUtils.isEmpty(imagePath)) {
+            member.setProfileImg(s3Client.upload(file, Domain.PROFILE));
+        }
         else if(ObjectUtils.isEmpty(file) && !ObjectUtils.isEmpty(imagePath)) {
             member.setProfileImg(imagePath);
         }

@@ -10,6 +10,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import two.two_user.domain.Member;
 import two.two_user.oauth.service.LoginService;
 //import org.springframework.web.bind.annotation.*;
 //import two.two_user.oauth.service.LoginService;
@@ -35,21 +36,21 @@ public class LoginController {
                 .build();
     }
 
-//    @GetMapping("/refresh")
-//    public ResponseEntity<?> refreshToken(@AuthenticationPrincipal Member member) {
-//        List<String> tokenInfo = loginService.tokenRefresh(member);
-//
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.AUTHORIZATION, tokenInfo.get(0))
-//                .header("JWT_USER_INFORMATION", tokenInfo.get(1))
-//                .header("JWT_EXPIRE_TIME", tokenInfo.get(2))
-//                .build();
-//    }
+    @GetMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@AuthenticationPrincipal Member member) {
+        List<String> tokenInfo = loginService.tokenRefresh(member);
 
-//    @GetMapping("/check")
-//    public ResponseEntity<Map<String, Boolean>> isAddInfo(@AuthenticationPrincipal Member member) {
-//
-//        return ResponseEntity.ok().body(loginService.isAddInfo(member));
-//    }
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, tokenInfo.get(0))
+                .header("JWT_USER_INFORMATION", tokenInfo.get(1))
+                .header("JWT_EXPIRE_TIME", tokenInfo.get(2))
+                .build();
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<Map<String, Boolean>> isAddInfo(@AuthenticationPrincipal Member member) {
+
+        return ResponseEntity.ok().body(loginService.isAddInfo(member));
+    }
 
 }

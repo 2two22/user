@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+    CANNOT_FOLLOW_YOURSELF("자기 자신을 팔로우할 수 없습니다."),
 
     FAILED_UPLOAD_FILE("파일 업로드에 실패하였습니다"),
     NOT_SUPPORTED_IMAGE("지원하지 않는 이미지 타입입니다."),
