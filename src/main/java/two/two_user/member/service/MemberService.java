@@ -1,4 +1,4 @@
-package two.two_user.oauth.service;
+package two.two_user.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,17 +9,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+import two.two_user.client.S3Client;
+import two.two_user.domain.Domain;
 import two.two_user.domain.Member;
 import two.two_user.domain.MemberStatus;
 import two.two_user.domain.repository.MemberRepository;
 import two.two_user.exception.BudException;
 import two.two_user.exception.ErrorCode;
+import two.two_user.member.dto.FollowDto;
+import two.two_user.member.dto.UserDto;
+import two.two_user.member.repository.FollowRepository;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static two.two_user.oauth.service.MemberConstants.FILE_EXTENSION_PNG;
 import static two.two_user.oauth.service.MemberConstants.PROFILE_BASIC_IMAGE_PREFIX;
@@ -30,8 +33,8 @@ import static two.two_user.oauth.service.MemberConstants.PROFILE_BASIC_IMAGE_PRE
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
-
-//    private final AwsS3Api awsS3Api;
+    private final FollowRepository followRepository;
+    private final S3Client s3Client;
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
@@ -46,9 +49,9 @@ public class MemberService implements UserDetailsService {
             member.setIntroduceMessage(introduceMessage);
         if(!ObjectUtils.isEmpty(job))
             member.setJob(job);
-//        if(!ObjectUtils.isEmpty(file) && ObjectUtils.isEmpty(imagePath)) {
-//            member.setProfileImg(awsS3Api.uploadImage(file, PROFILES));
-//        }
+        if(!ObjectUtils.isEmpty(file) && ObjectUtils.isEmpty(imagePath)) {
+            member.setProfileImg(s3Client.upload(file, Domain.PROFILE));
+        }
         else if(ObjectUtils.isEmpty(file) && !ObjectUtils.isEmpty(imagePath)) {
             member.setProfileImg(imagePath);
         }
@@ -96,6 +99,29 @@ public class MemberService implements UserDetailsService {
         memberRepository.save(member);
 
         return member.getId();
+    }
+
+    public UserDto readMyProfile(Member member) {
+        Long numberOfFollowers = followRepository.countByTarget(member);
+        Long numberOfFollows = followRepository.countByMember(member);
+        Long numberOfPosts = 0L;
+        //Long numberOfPosts = postRepository.countByMember(member);
+
+        return UserDto.of(member, numberOfFollowers, numberOfFollows, numberOfPosts);
+    }
+
+    public UserDto readProfile(Long userId, Member member) {
+        Member targetMember = memberRepository.findById(userId)
+                .orElseThrow(() -> new BudException(ErrorCode.NOT_REGISTERED_MEMBER));
+
+        Long numberOfFollowers = followRepository.countByTarget(targetMember);
+        Long numberOfFollows = followRepository.countByMember(targetMember);
+        Long numberOfPosts = 0L;
+        //Long numberOfPosts = postRepository.countByMember(targetMember);
+        boolean isFollowing = followRepository.existsByTargetAndMember(targetMember, member);
+
+        return UserDto.of(targetMember, Objects.equals(member.getId(), targetMember.getId()),
+                isFollowing, numberOfFollowers, numberOfFollows, numberOfPosts , targetMember.getStatus());
     }
 
 }

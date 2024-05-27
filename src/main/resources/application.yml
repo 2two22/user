@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://endpoint.amazonaws.com:3306/user
+    url: ${{ secrets.DB_ENDPOINT }}
     username: admin
     password: twotwo22
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -19,9 +19,27 @@ spring:
       client:
         registration:
           github:
-            client-id:
-            client-secret:
+            client-id: ${{ secrets.OAUTH_CLIENT_ID_GITHUB }}
+            client-secret: ${{ secrets.OAUTH_CLIENT_SECRET_GITHUB }}
 
   jwt:
-    secret:
+    secret: ZGF5b25lLXNwcmluZy1ib290LWRpdmlkZW5kLXByb2plY3QtdHV0b3JpYWwtand0LXNlY3JldC1rZXkK
+cloud:
+  aws:
+    s3:
+      bucket: twotwo-bucket
+    credentials:
+      access-key: ${{ secrets.AWS_ACCESS_KEY }}
+      secret-key: ${{ secrets.AWS_SECRET_KEY }}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+logging:
+  level:
+    com:
+      amazons:
+        util:
+          EC2MetadataUtils: ERROR
 

@@ -14,6 +14,7 @@ import two.two_user.oauth.service.AuthService;
 @RequiredArgsConstructor
 public class OAuthController {
     private final AuthService authService;
+
     @GetMapping("/login/oauth2")
     private ResponseEntity<JwtDto> login(@AuthenticationPrincipal OAuth2User oAuth2User) {
         return ResponseEntity.ok(authService.login(oAuth2User));
@@ -21,17 +22,15 @@ public class OAuthController {
 
     @PostMapping("/addInfo")
     public ResponseEntity<Boolean> addInfo(@AuthenticationPrincipal Member member,
-                                     @RequestPart(required = false) MultipartFile file,
-                                     @RequestPart(required = false) String imagePath,
-                                     @RequestPart String nickname,
-                                     @RequestPart String job) {
-//        return ResponseEntity.ok(authService.addAdditionalInfo(member, file, nickname, job, imagePath));
-        return null;
+                                           @RequestPart(required = false) MultipartFile file,
+                                           @RequestPart(required = false) String imagePath,
+                                           @RequestPart String nickname,
+                                           @RequestPart String job) {
+        return ResponseEntity.ok(authService.addAdditionalInfo(member, file, nickname, job, imagePath));
     }
 
     @GetMapping("/checkNickname")
     public ResponseEntity<Boolean> checkNickname(@RequestParam String nickname) {
-//        return ResponseEntity.ok(authService.checkNickname(nickname));
-        return null;
+        return ResponseEntity.ok(authService.checkNickname(nickname));
     }
 }
