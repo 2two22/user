@@ -13,7 +13,12 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-
+  cloud:
+    openfeign:
+      client:
+        config:
+          githubClient:
+            url: localhost:8081
   security:
     oauth2:
       client:
@@ -23,7 +28,7 @@ spring:
             client-secret: ${{ secrets.OAUTH_CLIENT_SECRET_GITHUB }}
 
   jwt:
-    secret: ZGF5b25lLXNwcmluZy1ib290LWRpdmlkZW5kLXByb2plY3QtdHV0b3JpYWwtand0LXNlY3JldC1rZXkK
+    secret: ZGF5b25lLXNwcmluZy1ib290LWRpdmlkZW5kLXByb2plY3QtdHV0b3JpYWwtand0LXNlY3JldC1rZXkKZGF5b25lLXNwcmluZy1ib290LWRpdmlkZW5kLXByb2plY3QtdHV0b3JpYWwtand0LXNlY3JldC1rZXkK
 cloud:
   aws:
     s3:
