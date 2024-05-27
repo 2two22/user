@@ -10,13 +10,15 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
+import two.two_user.client.GithubClient;
+import two.two_user.client.S3Client;
+import two.two_user.client.dto.request.GithubTokenRegisterRequest;
 import two.two_user.domain.Member;
 import two.two_user.domain.repository.MemberRepository;
 import two.two_user.exception.BudException;
 import two.two_user.exception.ErrorCode;
 import two.two_user.jwt.TokenProvider;
 import two.two_user.jwt.dto.JwtDto;
-
 
 import java.util.*;
 
@@ -28,7 +30,8 @@ public class LoginService {
     private final static String IS_ADD_INFO = "isAddInfo";
     private final TokenProvider tokenProvider;
     private final MemberRepository memberRepository;
-//    private final AwsS3Api awsS3Api;
+    private final S3Client s3Client;
+    private final GithubClient githubClient;
 
     @Value("${spring.security.oauth2.client.registration.github.client-id}")
     String client_id;
@@ -48,21 +51,23 @@ public class LoginService {
         tokenParam.add("client_secret", client_secret);
         HttpEntity<MultiValueMap<String, String>> oAuthTokenRequest = new HttpEntity<>(tokenParam, tokenHeaders);
         ResponseEntity<String> tokenResponse = tokenTemplate.postForEntity("https://github.com/login/oauth/access_token", oAuthTokenRequest, String.class);
-        if(ObjectUtils.isEmpty(tokenResponse.getBody()) || !tokenResponse.getBody().contains("access_token") || tokenResponse.getBody().contains("error")) return null;
+        if (ObjectUtils.isEmpty(tokenResponse.getBody()) || !tokenResponse.getBody().contains("access_token") || tokenResponse.getBody().contains("error"))
+            return null;
         String OAuthAccessToken = tokenResponse.getBody().split("&")[0].replace("access_token=", "");
         log.error(OAuthAccessToken);
         HttpHeaders userHeaders = new HttpHeaders();
         RestTemplate userTemplate = new RestTemplate();
         MultiValueMap<String, String> userParam = new LinkedMultiValueMap<>();
-        userHeaders.add(HttpHeaders.AUTHORIZATION,"Bearer " + OAuthAccessToken);
+        userHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + OAuthAccessToken);
         HttpEntity<MultiValueMap<String, String>> getUserInfoRequest = new HttpEntity<>(userParam, userHeaders);
         ResponseEntity<Map> userResponse = userTemplate.exchange("https://api.github.com/user", HttpMethod.GET, getUserInfoRequest, Map.class);
         log.error(userResponse.getBody().toString());
-        if(ObjectUtils.isEmpty(userResponse)) return null;
+        if (ObjectUtils.isEmpty(userResponse)) return null;
 
         Member member = saveOrUpdate(userResponse.getBody(), OAuthAccessToken);
-
-        return setTokenInfo(member);
+        List<String> response = setTokenInfo(member);
+        githubClient.registerUserToken(response.get(0), new GithubTokenRegisterRequest(OAuthAccessToken));
+        return response;
     }
 
     private Member saveOrUpdate(Map userResponse, String token) {
@@ -75,19 +80,17 @@ public class LoginService {
         String userCode = userResponse.get("id").toString();
         String nickname;
 
-        if(ObjectUtils.isEmpty(userResponse.get("name"))) {
+        if (ObjectUtils.isEmpty(userResponse.get("name"))) {
             nickname = userId;
-        }
-        else {
+        } else {
             nickname = userResponse.get("name").toString();
         }
 //        Level level =  levelRepository.findById(1L).get();
 
-        if(optionalMember.isEmpty()) {
+        if (optionalMember.isEmpty()) {
             Random random = new Random();
             int randNum = random.nextInt(30) + 1;
-            String imageUrl = null;
-//            String imageUrl = awsS3Api.getImageUrl("profiles/basic/" + randNum + ".png");
+            String imageUrl = "profiles/basic/" + randNum + ".png";
 
             member = Member.register(userId, userCode, token, imageUrl);
 //            githubInfo = GithubInfo.builder()
@@ -120,7 +123,7 @@ public class LoginService {
 
 
     public List<String> tokenRefresh(Member member) {
-        if(!tokenProvider.validateToken(member.getRefreshToken())) {
+        if (!tokenProvider.validateToken(member.getRefreshToken())) {
             throw new BudException(ErrorCode.INVALID_TOKEN);
         }
 

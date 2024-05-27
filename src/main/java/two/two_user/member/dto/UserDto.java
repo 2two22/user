@@ -16,14 +16,14 @@ import two.two_user.domain.MemberStatus;
 public class UserDto {
     private Long id;
     private String userId;
-    private String nickName;
+    private String nickname;
     private String description;
     private Long level;
     private Long numberOfFollowers;
     private Long numberOfFollows;
     private Long numberOfPosts;
     private String job;
-    private String profileUrl;
+    private String profilePath;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean isReader;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -36,10 +36,10 @@ public class UserDto {
         return UserDto.builder()
                 .id(member.getId())
                 .userId(member.getUserId())
-                .nickName(member.getNickname())
+                .nickname(member.getNickname())
                 .description(member.getIntroduceMessage())
 //                .level(member.getLevel().getLevelNumber())
-                .profileUrl(member.getProfileImg())
+                .profilePath(member.getProfileImg())
                 .numberOfFollowers(numberOfFollowrs)
                 .numberOfFollows(numberOfFollows)
                 .numberOfPosts(numberOfPosts)
@@ -55,10 +55,10 @@ public class UserDto {
         return UserDto.builder()
                 .id(member.getId())
                 .userId(member.getUserId())
-                .nickName(member.getNickname())
+                .nickname(member.getNickname())
                 .description(member.getIntroduceMessage())
 //                .level(member.getLevel().getLevelNumber())
-                .profileUrl(member.getProfileImg())
+                .profilePath(member.getProfileImg())
                 .numberOfFollowers(numberOfFollowrs)
                 .numberOfFollows(numberOfFollows)
                 .job(member.getJob())

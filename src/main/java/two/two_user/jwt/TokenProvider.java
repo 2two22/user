@@ -36,7 +36,6 @@ public class TokenProvider {
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
-//
     public JwtDto generateToken(String userId) {
         Optional<Member> optionalReader = memberRepository.findByUserId(userId);
         if (!optionalReader.isPresent()) {
@@ -45,18 +44,42 @@ public class TokenProvider {
         }
         Member member = optionalReader.get();
 
-        return setJwtDto(userId, member.getStatus().getKey());
+        return setJwtDto(userId, member.getId());
     }
-//
     public JwtDto generateToken(OAuth2User oAuth2User) {
         String userId = oAuth2User.getAttribute("login");
         String role = oAuth2User.getAuthorities().toString();
         return setJwtDto(userId, role);
     }
-//
+
+    private JwtDto setJwtDto(String userId, Long id) {
+        Claims claims = Jwts.claims().setSubject(userId).add("id", id).build();
+
+        long now = System.currentTimeMillis();
+        Date accessTokenExpiredTime = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+
+        String accessToken = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(now))
+                .setExpiration(accessTokenExpiredTime)
+                .signWith(SignatureAlgorithm.HS512, this.secretKey)
+                .compact();
+        String refreshToken = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+                .signWith(SignatureAlgorithm.HS512, this.secretKey)
+                .compact();
+        return JwtDto.builder()
+                .grantType("Bearer ")
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .accessTokenExpiresTime(now + ACCESS_TOKEN_EXPIRE_TIME)
+                .build();
+    }
+
     private JwtDto setJwtDto(String userId, String role) {
         Claims claims = Jwts.claims().setSubject(userId).build();
-        //claims.put(KEY_ROLE, role);
 
         long now = System.currentTimeMillis();
         Date accessTokenExpiredTime = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
@@ -90,13 +113,16 @@ public class TokenProvider {
         return this.parseClaims(token).getSubject();
     }
 
+    public Long getId(String token){
+        return this.parseClaims(token).get("id", Long.class);
+    }
+
     public boolean validateToken(String token) {
         if (!StringUtils.hasText(token)) return false;
 
         Claims claims = this.parseClaims(token);
         return !claims.getExpiration().before(new Date());
     }
-//
     private Claims parseClaims(String token) {
         try {
             return Jwts.parser().setSigningKey(this.secretKey)
