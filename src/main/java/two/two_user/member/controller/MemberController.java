@@ -10,7 +10,6 @@ import two.two_user.domain.Member;
 import two.two_user.member.dto.UserDto;
 import two.two_user.member.service.MemberService;
 
-
 import java.util.List;
 
 @Slf4j
@@ -22,11 +21,11 @@ public class MemberController {
 
     @PostMapping("/modifyInfo")
     public ResponseEntity<Boolean> modifyMemberInfo(@AuthenticationPrincipal Member member,
-                                              @RequestPart(required = false) MultipartFile file,
-                                              @RequestPart(required = false) String nickname,
-                                              @RequestPart(required = false) String introduceMessage,
-                                              @RequestPart(required = false) String imagePath,
-                                              @RequestPart String job) {
+                                                    @RequestPart(required = false) MultipartFile file,
+                                                    @RequestPart(required = false) String nickname,
+                                                    @RequestPart(required = false) String introduceMessage,
+                                                    @RequestPart(required = false) String imagePath,
+                                                    @RequestPart String job) {
         return ResponseEntity.ok(memberService.modifyInfo(member, file, nickname, introduceMessage, job, imagePath));
     }
 

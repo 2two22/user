@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+import two.two_user.client.CommunityClient;
 import two.two_user.client.S3Client;
 import two.two_user.domain.Domain;
 import two.two_user.domain.Member;
@@ -35,6 +36,7 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
     private final S3Client s3Client;
+    private final CommunityClient communityClient;
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
@@ -104,8 +106,7 @@ public class MemberService implements UserDetailsService {
     public UserDto readMyProfile(Member member) {
         Long numberOfFollowers = followRepository.countByTarget(member);
         Long numberOfFollows = followRepository.countByMember(member);
-        Long numberOfPosts = 0L;
-        //Long numberOfPosts = postRepository.countByMember(member);
+        Long numberOfPosts = communityClient.getUsersPostCount(member.getId());
 
         return UserDto.of(member, numberOfFollowers, numberOfFollows, numberOfPosts);
     }
@@ -116,8 +117,7 @@ public class MemberService implements UserDetailsService {
 
         Long numberOfFollowers = followRepository.countByTarget(targetMember);
         Long numberOfFollows = followRepository.countByMember(targetMember);
-        Long numberOfPosts = 0L;
-        //Long numberOfPosts = postRepository.countByMember(targetMember);
+        Long numberOfPosts = communityClient.getUsersPostCount(userId);
         boolean isFollowing = followRepository.existsByTargetAndMember(targetMember, member);
 
         return UserDto.of(targetMember, Objects.equals(member.getId(), targetMember.getId()),

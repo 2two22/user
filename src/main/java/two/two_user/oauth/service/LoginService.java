@@ -47,12 +47,18 @@ public class LoginService {
 
         MultiValueMap<String, String> tokenParam = new LinkedMultiValueMap<>();
         tokenParam.add("code", code);
+        // http://localhost:5173/logInLoading?code=792b10f253a872f0386c
         tokenParam.add("client_id", client_id);
         tokenParam.add("client_secret", client_secret);
+        log.error(code);
         HttpEntity<MultiValueMap<String, String>> oAuthTokenRequest = new HttpEntity<>(tokenParam, tokenHeaders);
+        log.error("-----------");
         ResponseEntity<String> tokenResponse = tokenTemplate.postForEntity("https://github.com/login/oauth/access_token", oAuthTokenRequest, String.class);
+        log.error(tokenResponse.getStatusCode() + " ");
+        log.error(tokenResponse.getBody());
         if (ObjectUtils.isEmpty(tokenResponse.getBody()) || !tokenResponse.getBody().contains("access_token") || tokenResponse.getBody().contains("error"))
             return null;
+        log.error(tokenResponse.getBody());
         String OAuthAccessToken = tokenResponse.getBody().split("&")[0].replace("access_token=", "");
         log.error(OAuthAccessToken);
         HttpHeaders userHeaders = new HttpHeaders();

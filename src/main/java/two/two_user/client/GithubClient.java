@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import two.two_user.client.dto.request.GithubInfoRegisterRequest;
 
-@FeignClient(name = "githubClient", value = "githubClient")
+@FeignClient(value = "githubClient", url = "${feign.github}")
 public interface GithubClient {
-    @PostMapping(value = "/github")
+    @PostMapping(value = "/api/saveToken")
     void registerUserToken(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token, @RequestBody GithubInfoRegisterRequest request);
 }
