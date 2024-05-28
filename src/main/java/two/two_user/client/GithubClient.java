@@ -5,10 +5,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import two.two_user.client.dto.request.GithubTokenRegisterRequest;
+import two.two_user.client.dto.request.GithubInfoRegisterRequest;
 
-@FeignClient(name = "githubClient")
+@FeignClient(name = "githubClient", value = "githubClient")
 public interface GithubClient {
-    @PostMapping(value = "/token")
-    void registerUserToken(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token, @RequestBody GithubTokenRegisterRequest request);
+    @PostMapping(value = "/github")
+    void registerUserToken(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token, @RequestBody GithubInfoRegisterRequest request);
 }

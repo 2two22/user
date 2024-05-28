@@ -1,6 +1,9 @@
+server:
+  port: 8080
+
 spring:
   datasource:
-    url: ${{ secrets.DB_ENDPOINT }}
+    url: masking
     username: admin
     password: twotwo22
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -24,8 +27,8 @@ spring:
       client:
         registration:
           github:
-            client-id: ${{ secrets.OAUTH_CLIENT_ID_GITHUB }}
-            client-secret: ${{ secrets.OAUTH_CLIENT_SECRET_GITHUB }}
+            client-id: masking
+            client-secret: masking
 
   jwt:
     secret: ZGF5b25lLXNwcmluZy1ib290LWRpdmlkZW5kLXByb2plY3QtdHV0b3JpYWwtand0LXNlY3JldC1rZXkKZGF5b25lLXNwcmluZy1ib290LWRpdmlkZW5kLXByb2plY3QtdHV0b3JpYWwtand0LXNlY3JldC1rZXkK
@@ -34,8 +37,8 @@ cloud:
     s3:
       bucket: twotwo-bucket
     credentials:
-      access-key: ${{ secrets.AWS_ACCESS_KEY }}
-      secret-key: ${{ secrets.AWS_SECRET_KEY }}
+      access-key: masking
+      secret-key: masking
     region:
       static: ap-northeast-2
       auto: false
