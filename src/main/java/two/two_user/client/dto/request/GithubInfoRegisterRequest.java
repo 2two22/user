@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class GithubInfoRegisterRequest {
-    private String token;
+    private final String token;
 }

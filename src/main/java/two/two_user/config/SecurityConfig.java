@@ -48,7 +48,7 @@ public class SecurityConfig {
                 "http://localhost:8080",
                 "http://127.0.0.1:8080",
                 "http://127.0.0.1:5173",
-                "https://mlf.vercel.app",
+                "http://localhost:5173",
                 "https://stately-yeot-007fa8.netlify.app"
         ));
         config.setAllowedMethods(Arrays.asList(

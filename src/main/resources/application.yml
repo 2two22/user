@@ -29,7 +29,6 @@ spring:
           github:
             client-id: masking
             client-secret: masking
-
   jwt:
     secret: ZGF5b25lLXNwcmluZy1ib290LWRpdmlkZW5kLXByb2plY3QtdHV0b3JpYWwtand0LXNlY3JldC1rZXkKZGF5b25lLXNwcmluZy1ib290LWRpdmlkZW5kLXByb2plY3QtdHV0b3JpYWwtand0LXNlY3JldC1rZXkK
 cloud:
@@ -50,4 +49,9 @@ logging:
       amazons:
         util:
           EC2MetadataUtils: ERROR
+
+feign:
+  community: localhost:8081
+  github: localhost:8082
+  news: localhost:8083
 
