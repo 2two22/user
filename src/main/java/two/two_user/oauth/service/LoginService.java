@@ -12,7 +12,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 import two.two_user.client.GithubClient;
 import two.two_user.client.S3Client;
-import two.two_user.client.dto.request.GithubTokenRegisterRequest;
+import two.two_user.client.dto.request.GithubInfoRegisterRequest;
 import two.two_user.domain.Member;
 import two.two_user.domain.repository.MemberRepository;
 import two.two_user.exception.BudException;
@@ -66,7 +66,7 @@ public class LoginService {
 
         Member member = saveOrUpdate(userResponse.getBody(), OAuthAccessToken);
         List<String> response = setTokenInfo(member);
-        githubClient.registerUserToken(response.get(0), new GithubTokenRegisterRequest(OAuthAccessToken));
+        githubClient.registerUserToken(response.get(0), new GithubInfoRegisterRequest(OAuthAccessToken));
         return response;
     }
 
