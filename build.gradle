@@ -19,10 +19,10 @@ ext {
 	set('springCloudVersion', "2023.0.1")
 }
 
-
-tasks.named('test') {
-	useJUnitPlatform()
-}
+//
+//tasks.named('test') {
+//	useJUnitPlatform()
+//}
 
 dependencies{
 	implementation 'org.springframework.boot:spring-boot-starter'
