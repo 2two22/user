@@ -2,6 +2,7 @@ package two.two_user.member.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,9 @@ public class MemberController {
                                                     @RequestPart(required = false) String nickname,
                                                     @RequestPart(required = false) String introduceMessage,
                                                     @RequestPart(required = false) String imagePath,
-                                                    @RequestPart String job) {
-        return ResponseEntity.ok(memberService.modifyInfo(member, file, nickname, introduceMessage, job, imagePath));
+                                                    @RequestPart String job,
+                                                    @RequestHeader(value = HttpHeaders.AUTHORIZATION) String token) {
+        return ResponseEntity.ok(memberService.modifyInfo(member, file, nickname, introduceMessage, job, imagePath, token));
     }
 
     @GetMapping("/getLevelImage")

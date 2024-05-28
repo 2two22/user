@@ -11,6 +11,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 import two.two_user.client.CommunityClient;
 import two.two_user.client.S3Client;
+import two.two_user.client.dto.request.ProfileRequest;
 import two.two_user.domain.Domain;
 import two.two_user.domain.Member;
 import two.two_user.domain.MemberStatus;
@@ -44,7 +45,7 @@ public class MemberService implements UserDetailsService {
                 .orElseThrow(() -> new BudException(ErrorCode.NOT_REGISTERED_MEMBER));
     }
 
-    public boolean modifyInfo(Member member, MultipartFile file, String nickname, String introduceMessage, String job, String imagePath) {
+    public boolean modifyInfo(Member member, MultipartFile file, String nickname, String introduceMessage, String job, String imagePath, String token) {
         if(!ObjectUtils.isEmpty(nickname))
             member.setNickname(nickname);
         if(!ObjectUtils.isEmpty(introduceMessage))
@@ -59,6 +60,7 @@ public class MemberService implements UserDetailsService {
         }
 
         memberRepository.save(member);
+        communityClient.updateWriterProfile(ProfileRequest.from(member), token);
         return true;
     }
 
