@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: masking
+    url: ${DB_URL}
     username: admin
     password: twotwo22
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,19 +16,13 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-  cloud:
-    openfeign:
-      client:
-        config:
-          githubClient:
-            url: localhost:8081
   security:
     oauth2:
       client:
         registration:
           github:
-            client-id: masking
-            client-secret: masking
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
   jwt:
     secret: ZGF5b25lLXNwcmluZy1ib290LWRpdmlkZW5kLXByb2plY3QtdHV0b3JpYWwtand0LXNlY3JldC1rZXkKZGF5b25lLXNwcmluZy1ib290LWRpdmlkZW5kLXByb2plY3QtdHV0b3JpYWwtand0LXNlY3JldC1rZXkK
 cloud:
@@ -36,8 +30,8 @@ cloud:
     s3:
       bucket: twotwo-bucket
     credentials:
-      access-key: masking
-      secret-key: masking
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
     region:
       static: ap-northeast-2
       auto: false
