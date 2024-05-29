@@ -47,7 +47,7 @@ public class LoginService {
 
         MultiValueMap<String, String> tokenParam = new LinkedMultiValueMap<>();
         tokenParam.add("code", code);
-        // http://localhost:5173/logInLoading?code=792b10f253a872f0386c
+        // http://localhost:5173/logInLoading?code=
         tokenParam.add("client_id", client_id);
         tokenParam.add("client_secret", client_secret);
         log.error(code);
