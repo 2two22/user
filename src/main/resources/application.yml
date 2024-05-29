@@ -45,7 +45,7 @@ logging:
           EC2MetadataUtils: ERROR
 
 feign:
-  community: localhost:8081
-  github: localhost:8082
-  news: localhost:8083
+  community: http://community-service
+  github: http://github-service
+  news: http://news-service
 
