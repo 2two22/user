@@ -72,7 +72,7 @@ public class LoginService {
 
         Member member = saveOrUpdate(userResponse.getBody(), OAuthAccessToken);
         List<String> response = setTokenInfo(member);
-        githubClient.registerUserToken(response.get(0), new GithubInfoRegisterRequest(OAuthAccessToken));
+        //githubClient.registerUserToken(response.get(0), new GithubInfoRegisterRequest(OAuthAccessToken));
         return response;
     }
 
