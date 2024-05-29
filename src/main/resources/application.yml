@@ -45,7 +45,7 @@ logging:
           EC2MetadataUtils: ERROR
 
 feign:
-  community: http://community-service
-  github: http://github-service
-  news: http://news-service
+  community: http://community-service:8081
+  github: http://github-service:8082
+  news: http://news-service:8083
 
