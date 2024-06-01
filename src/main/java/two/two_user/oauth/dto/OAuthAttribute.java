@@ -46,7 +46,6 @@ public class OAuthAttribute {
                 .userId(userId)
                 .userCode(userCode)
                 .status(MemberStatus.VERIFIED)
-                .oauthToken(oAuthAccessToken)
                 .profileImg(imageUrl)
                 .addInfoYn(false)
                 .build();

@@ -10,6 +10,6 @@ import two.two_user.client.dto.request.GithubInfoRegisterRequest;
 
 @FeignClient(value = "githubClient", url = "${feign.github}")
 public interface GithubClient {
-    @PostMapping(value = "/api/saveToken")
+    @PostMapping(value = "/github/githubInfo")
     ResponseEntity<Void> registerUserToken(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token, @RequestBody GithubInfoRegisterRequest request);
 }
