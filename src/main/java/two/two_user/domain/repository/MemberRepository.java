@@ -13,8 +13,6 @@ import java.util.Set;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByUserId(String userId);
 
-    Optional<Member> findByOauthToken(String oauthToken);
-
     List<Member> findAllByUserIdIn(Set<String> userIds);
     
     Optional<Member> findByUserCode(String userCode);
