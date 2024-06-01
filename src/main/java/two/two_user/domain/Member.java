@@ -39,7 +39,6 @@ public class Member extends BaseEntity implements UserDetails {
 
     private String job;
 
-    private String oauthToken;
 
     @Enumerated(EnumType.STRING)
     private MemberStatus status;
@@ -51,17 +50,14 @@ public class Member extends BaseEntity implements UserDetails {
 
     public Member update(String userCode, String oauthToken) {
         this.userCode = userCode;
-        this.oauthToken = oauthToken;
-
         return this;
     }
 
-    public static Member register(String userId, String userCode, String token, String profileImg) {
+    public static Member register(String userId, String userCode, String profileImg) {
         return Member.builder()
                 .userId(userId)
                 .userCode(userCode)
                 .nickname(UUID.randomUUID().toString())
-                .oauthToken(token)
                 .profileImg(profileImg)
                 .addInfoYn(false)
                 .status(MemberStatus.VERIFIED)

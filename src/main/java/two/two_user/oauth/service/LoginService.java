@@ -72,7 +72,7 @@ public class LoginService {
 
         Member member = saveOrUpdate(userResponse.getBody(), OAuthAccessToken);
         List<String> response = setTokenInfo(member);
-        //githubClient.registerUserToken(response.get(0), new GithubInfoRegisterRequest(OAuthAccessToken));
+        ResponseEntity<Void> responseEntity = githubClient.registerUserToken(response.get(0), new GithubInfoRegisterRequest(OAuthAccessToken));
         return response;
     }
 
@@ -98,7 +98,7 @@ public class LoginService {
             int randNum = random.nextInt(30) + 1;
             String imageUrl = "profiles/basic/" + randNum + ".png";
 
-            member = Member.register(userId, userCode, token, imageUrl);
+            member = Member.register(userId, userCode, imageUrl);
 //            githubInfo = GithubInfo.builder()
 //                    .userId(userId)
 //                    .username(nickname)
