@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(value = "newsClient", url = "${feign.news}")
 public interface NewsClient {
-    @PostMapping(value = "/news/bookmark/{userId}")
-    int saveBookmark(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token, @RequestParam("newsId") Long newsId);
+    @PostMapping(value = "/news/bookmark")
+    ResponseEntity<Long> getBookMark(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token);
 }

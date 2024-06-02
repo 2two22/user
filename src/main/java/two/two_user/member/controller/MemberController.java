@@ -53,7 +53,8 @@ public class MemberController {
     }
 
     @GetMapping
-    private ResponseEntity<UserDto> readMyProfile(@AuthenticationPrincipal Member member) {
-        return ResponseEntity.ok(memberService.readMyProfile(member));
+    private ResponseEntity<UserDto> readMyProfile(@AuthenticationPrincipal Member member,
+                                                  @RequestHeader(value = HttpHeaders.AUTHORIZATION) String token) {
+        return ResponseEntity.ok(memberService.readMyProfile(member, token));
     }
 }

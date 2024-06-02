@@ -2,6 +2,7 @@ package two.two_user.member.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 import two.two_user.client.CommunityClient;
+import two.two_user.client.NewsClient;
 import two.two_user.client.S3Client;
 import two.two_user.client.dto.request.ProfileRequest;
 import two.two_user.domain.Domain;
@@ -38,6 +40,7 @@ public class MemberService implements UserDetailsService {
     private final FollowRepository followRepository;
     private final S3Client s3Client;
     private final CommunityClient communityClient;
+    private final NewsClient newsClient;
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
@@ -105,12 +108,13 @@ public class MemberService implements UserDetailsService {
         return member.getId();
     }
 
-    public UserDto readMyProfile(Member member) {
+    public UserDto readMyProfile(Member member, String token) {
         Long numberOfFollowers = followRepository.countByTarget(member);
         Long numberOfFollows = followRepository.countByMember(member);
         Long numberOfPosts = communityClient.getUsersPostCount(member.getId());
+        ResponseEntity<Long> numberOfScraps = newsClient.getBookMark(token);
 
-        return UserDto.of(member, numberOfFollowers, numberOfFollows, numberOfPosts);
+        return UserDto.of(member, numberOfFollowers, numberOfFollows, numberOfPosts, numberOfScraps.getBody());
     }
 
     public UserDto readProfile(Long userId, Member member) {

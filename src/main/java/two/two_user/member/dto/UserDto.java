@@ -21,7 +21,10 @@ public class UserDto {
     private Long level;
     private Long numberOfFollowers;
     private Long numberOfFollows;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long numberOfPosts;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long numberOfScraps;
     private String job;
     private String profileUrl;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -51,7 +54,7 @@ public class UserDto {
     }
 
     public static UserDto of(Member member, Long numberOfFollowrs,
-                             Long numberOfFollows, Long numberOfPosts){
+                             Long numberOfFollows, Long numberOfPosts, Long numberOfScraps){
         return UserDto.builder()
                 .id(member.getId())
                 .userId(member.getUserId())
@@ -63,6 +66,7 @@ public class UserDto {
                 .numberOfFollows(numberOfFollows)
                 .job(member.getJob())
                 .numberOfPosts(numberOfPosts)
+                .numberOfScraps(numberOfScraps)
                 .build();
     }
 }
