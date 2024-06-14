@@ -45,34 +45,29 @@ public class LoginService {
         RestTemplate tokenTemplate = new RestTemplate();
         tokenHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
+        // code 를 통해 github token 발급
         MultiValueMap<String, String> tokenParam = new LinkedMultiValueMap<>();
         tokenParam.add("code", code);
-        // http://localhost:5173/logInLoading?code=
         tokenParam.add("client_id", client_id);
         tokenParam.add("client_secret", client_secret);
-        log.error(code);
         HttpEntity<MultiValueMap<String, String>> oAuthTokenRequest = new HttpEntity<>(tokenParam, tokenHeaders);
-        log.error("-----------");
         ResponseEntity<String> tokenResponse = tokenTemplate.postForEntity("https://github.com/login/oauth/access_token", oAuthTokenRequest, String.class);
-        log.error(tokenResponse.getStatusCode() + " ");
-        log.error(tokenResponse.getBody());
         if (ObjectUtils.isEmpty(tokenResponse.getBody()) || !tokenResponse.getBody().contains("access_token") || tokenResponse.getBody().contains("error"))
             return null;
-        log.error(tokenResponse.getBody());
+        // github 로부터 온 response 에서 토큰 추출
         String OAuthAccessToken = tokenResponse.getBody().split("&")[0].replace("access_token=", "");
-        log.error(OAuthAccessToken);
         HttpHeaders userHeaders = new HttpHeaders();
         RestTemplate userTemplate = new RestTemplate();
         MultiValueMap<String, String> userParam = new LinkedMultiValueMap<>();
         userHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + OAuthAccessToken);
         HttpEntity<MultiValueMap<String, String>> getUserInfoRequest = new HttpEntity<>(userParam, userHeaders);
         ResponseEntity<Map> userResponse = userTemplate.exchange("https://api.github.com/user", HttpMethod.GET, getUserInfoRequest, Map.class);
-        log.error(userResponse.getBody().toString());
         if (ObjectUtils.isEmpty(userResponse)) return null;
 
-        Member member = saveOrUpdate(userResponse.getBody(), OAuthAccessToken);
+        Member member = saveOrUpdate(userResponse.getBody());
         List<String> response = setTokenInfo(member);
-        ResponseEntity<Void> responseEntity = githubClient.registerUserToken(response.get(0), GithubInfoRegisterRequest.builder()
+        // github 서버에 github info 정보 저장 request
+        githubClient.registerUserToken(response.get(0), GithubInfoRegisterRequest.builder()
                 .memberId(member.getId())
                 .username(member.getUsername())
                 .accessToken(OAuthAccessToken)
@@ -80,11 +75,9 @@ public class LoginService {
         return response;
     }
 
-    private Member saveOrUpdate(Map userResponse, String token) {
+    private Member saveOrUpdate(Map userResponse) {
         Optional<Member> optionalMember = memberRepository.findByUserId(userResponse.get("login").toString());
-//        Optional<GithubInfo> optionalGithubInfo = githubInfoRepository.findByUserId(userResponse.get("login").toString());
         Member member;
-//        GithubInfo githubInfo;
 
         String userId = userResponse.get("login").toString();
         String userCode = userResponse.get("id").toString();
@@ -95,7 +88,6 @@ public class LoginService {
         } else {
             nickname = userResponse.get("name").toString();
         }
-//        Level level =  levelRepository.findById(1L).get();
 
         if (optionalMember.isEmpty()) {
             Random random = new Random();
@@ -103,28 +95,10 @@ public class LoginService {
             String imageUrl = "profiles/basic/" + randNum + ".png";
 
             member = Member.register(userId, userCode, imageUrl);
-//            githubInfo = GithubInfo.builder()
-//                    .userId(userId)
-//                    .username(nickname)
-//                    .accessToken(token)
-//                    .build();
         }
-//        else if(optionalGithubInfo.isEmpty()) {
-//            member = optionalMember.get();
-//            member.update(userCode, token);
-//            githubInfo = GithubInfo.builder()
-//                    .userId(userId)
-//                    .username(nickname)
-//                    .accessToken(token)
-//                    .build();
-//        }
         else {
             member = optionalMember.get();
-            member.update(userCode, token);
-//            githubInfo = optionalGithubInfo.get();
-//
-//            githubInfo.setAccessToken(token);
-//            githubInfo.setUsername(nickname);
+            member.update(userCode);
         }
         memberRepository.save(member);
 

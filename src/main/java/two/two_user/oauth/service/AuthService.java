@@ -24,7 +24,6 @@ import two.two_user.jwt.dto.RefreshDto;
 public class AuthService {
     private final TokenProvider tokenProvider;
     private final MemberRepository memberRepository;
-//    private final LevelRepository levelRepository;
     private final S3Client s3Client;
 
     public JwtDto login(OAuth2User oAuth2User) {

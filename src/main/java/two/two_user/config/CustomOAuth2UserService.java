@@ -25,17 +25,14 @@ import java.util.Random;
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final MemberRepository memberRepository;
-//    private final AwsS3Api awsS3Api;
-    // private final HttpSession httpSession;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-         String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
         String oAuthAccessToken = userRequest.getAccessToken().getTokenValue();
-        log.info("Request: OAuth2 Access Token:" + oAuthAccessToken);
 
         String userCode = oAuth2User.getName();
         String userNameAttributeName = userRequest
@@ -51,43 +48,19 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private Member saveOrUpdate(OAuthAttribute attributes) {
         Optional<Member> optionalMember = memberRepository.findByUserId(attributes.getUserId());
-//        Optional<GithubInfo> optionalGithubInfo = githubInfoRepository.findByUserId(attributes.getUserId());
         Member member;
-//        GithubInfo githubInfo;
-        if(optionalMember.isEmpty()) {
+        if (optionalMember.isEmpty()) {
             Random random = new Random();
             int randNum = random.nextInt(30) + 1;
             String imageUrl = null;
-//            String imageUrl = awsS3Api.getImageUrl("profiles/basic/" + randNum + ".png");
 
             member = attributes.toEntity(imageUrl);
-//            githubInfo = GithubInfo.builder()
-//                    .userId(attributes.getUserId())
-//                    .username(attributes.getGithubUsername())
-//                    .accessToken(attributes.getOAuthAccessToken())
-//                    .build();
-        }
-//        else if(optionalGithubInfo.isEmpty()) {
-//            member = optionalMember.get();
-//            member.update(attributes.getUserCode(), attributes.getOAuthAccessToken());
-//            githubInfo = GithubInfo.builder()
-//                    .userId(attributes.getUserId())
-//                    .username(attributes.getGithubUsername())
-//                    .accessToken(attributes.getOAuthAccessToken())
-//                    .build();
-//        }
-        else {
+        } else {
             member = optionalMember.get();
-            member.update(attributes.getUserCode(), attributes.getOAuthAccessToken());
-//            githubInfo = optionalGithubInfo.get();
-//
-//            githubInfo.setAccessToken(attributes.getOAuthAccessToken());
-//            githubInfo.setUsername(attributes.getGithubUsername());
+            member.update(attributes.getUserCode());
+
         }
         memberRepository.save(member);
-
-//        githubInfo.setMember(member);
-//        githubInfoRepository.save(githubInfo);
         return member;
     }
 

@@ -67,19 +67,6 @@ public class MemberService implements UserDetailsService {
         return true;
     }
 
-    public List<String> getLevelImage(Member member) {
-//        long level = member.getLevel().getLevelNumber();
-        List<String> levelArray = new ArrayList<>();
-//
-//        for(int i=1; i<=10; i++) {
-//            if(i <= level) {
-//                levelArray.add(awsS3Api.getImageUrl("levels/lv" + i + ".png"));
-//            } else {
-//                levelArray.add(awsS3Api.getImageUrl("levels/lv" + i + "L.png"));
-//            }
-//        }
-        return levelArray;
-    }
 
     public String getProfileRandomImage() {
         Random rd = new Random();
@@ -91,8 +78,6 @@ public class MemberService implements UserDetailsService {
     public long withdrawMember(Member member) {
         String uuid;
         String withdrawMemberPrefix = "Deleted User ";
-
-//        githubInfoRepository.deleteByMemberId(member.getId());
 
         do {
             uuid = UUID.randomUUID().toString().substring(0, 8);

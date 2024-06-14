@@ -39,7 +39,6 @@ public class Member extends BaseEntity implements UserDetails {
 
     private String job;
 
-
     @Enumerated(EnumType.STRING)
     private MemberStatus status;
     private String introduceMessage;
@@ -48,7 +47,7 @@ public class Member extends BaseEntity implements UserDetails {
 
     private boolean addInfoYn;
 
-    public Member update(String userCode, String oauthToken) {
+    public Member update(String userCode) {
         this.userCode = userCode;
         return this;
     }

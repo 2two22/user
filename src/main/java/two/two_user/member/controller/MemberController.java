@@ -31,11 +31,6 @@ public class MemberController {
         return ResponseEntity.ok(memberService.modifyInfo(member, file, nickname, introduceMessage, job, imagePath, token));
     }
 
-    @GetMapping("/getLevelImage")
-    public ResponseEntity<List<String>> getLevelImage(@AuthenticationPrincipal Member member) {
-        return ResponseEntity.ok(memberService.getLevelImage(member));
-    }
-
     @GetMapping("/random-image")
     public ResponseEntity<String> getProfileRandomImage() {
         return ResponseEntity.ok(memberService.getProfileRandomImage());
