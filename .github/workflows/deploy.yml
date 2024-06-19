@@ -33,7 +33,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_ID }}/user:latest
+          repository: ${{ secrets.DOCKERHUB_ID }}/user
+          tags: ${{ github.sha }}, latest
           build-args: |
             DB_URL=${{ secrets.DB_ENDPOINT }}
             GITHUB_CLIENT_ID=${{ secrets.OAUTH_CLIENT_ID_GITHUB }}
@@ -49,5 +50,5 @@ jobs:
           key: ${{ secrets.SSH_DEPLOYER }}
           port: 22
           script: |
-            kubectl set image deployment/user-deployment user=${{ secrets.DOCKERHUB_ID }}/user:latest
+            kubectl set image deployment/user-deployment user=${{ secrets.DOCKERHUB_ID }}/user:${{ github.sha }}
             kubectl rollout restart deployment/user-deployment
