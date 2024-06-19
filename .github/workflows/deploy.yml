@@ -33,8 +33,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          repository: ${{ secrets.DOCKERHUB_ID }}/user
-          tags: ${{ github.sha }}, latest
+          tags: ${{ secrets.DOCKERHUB_ID }}/user:${{ github.sha }}, ${{ secrets.DOCKERHUB_ID }}/user:latest
           build-args: |
             DB_URL=${{ secrets.DB_ENDPOINT }}
             GITHUB_CLIENT_ID=${{ secrets.OAUTH_CLIENT_ID_GITHUB }}
